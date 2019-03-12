@@ -6,46 +6,47 @@
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
-
+		
             var DBVersion="2";
-
+			
             var DBStorage = window.openDatabase("DBStorage.db", "", "Databse Storage", 200000);
-
-            document.addEventListener("deviceready", onDeviceReady, false);
-
-            function onDeviceReady() {
+           
+		   document.addEventListener("deviceready", onDeviceReady, false);
+          
+		  function onDeviceReady() {
                 alert("Calling values");
             }
-
+			
             function GenerateUpgradeDB() {
-
                 if(DBStorage.version == "2") {
-				 alert("version  ");
+				 alert("CORRECT DB Version  ");
                     DBStorage.changeVersion("2",DBVersion,
                     function(tx) {
-					// in here: ERASE OLD DATABASE RAJESH PATESH
-                        tx.executeSql("CREATE TABLE IF NOT EXISTS DEMO (ROLLID INTEGER PRIMARY KEY AUTOINCREMENT, ROLLNAME TEXT, ROLLDETAIL TEXT, ROLLINFO TEXT)");
-						
-						// for later: 
+					
+                        tx.executeSql("CREATE TABLE IF NOT EXISTS PUBDATABASE (PUBID INTEGER PRIMARY KEY AUTOINCREMENT, PUBNAME TEXT, PUBADDRESS TEXT, PUBINFO TEXT)");
+                        
+						// Niall do this: 
 						// check if input already exists in DB
 						// if it does -> skip it, if it doesnt -> add it
                         
-                        tx.executeSql("INSERT INTO DEMO VALUES (NULL, 'Name1', 'This is ABC', 'After1')");
-                        tx.executeSql("INSERT INTO DEMO VALUES (NULL, 'Name2', 'This is CDE', 'After2')");
-                        tx.executeSql("INSERT INTO DEMO VALUES (NULL, 'Name3', 'This is EDF', 'After3')");
-
-                    }, function(jsonError) {
+                       tx.executeSql("INSERT INTO PUBDATABASE VALUES (NULL, 'Beár An Ráille', 'Abbeytown, Ballypheasan, Roscommon Town, Co. Roscommon', 'A family run pub owned by the Kiernan Family. Currently at the helm are brothers Dermot & Dale who took over from their father Marty in the mid 00’s. We run a friendly, relaxed local bar that has a warm welcome for everyone from the local punter to the wide eyed tourist.We are just on the edge of town on the main Galway road and are round the corner from Roscommon Train Station and across the road from The Abbey Hotel.')");
+                       tx.executeSql("INSERT INTO PUBDATABASE VALUES (NULL, 'Sean’s Bar', '13 Main St, Athlone, Co. Westmeath', 'Situated in the Heart of Ireland, Seans Bar plays host to visitors from all around the world. Whether absorbing the history, listening to music, visiting with friends and family or simply enjoying the perfect pint, the appeal is equally strong for everyone. Listed in both “25 of the Most Incredible Bars in the World” and “50 Bars to Blow Your Mind” by Lonely Planet, a visit to Sean’s is a must! Find out more about why Seans Bar is not only the oldest, but one of the best-loved pubs in world.')");
+                       tx.executeSql("INSERT INTO PUBDATABASE VALUES (NULL, 'Prince Bar and Resturant', 'Church St, Loughanaskin, Athlone, Co. Westmeath', 'The Prince Bar is widely known for being a warm and welcoming venue. Our popular bar is a fantastic venue for all customer needs let them be big or small, we pride ourselves on accommodating all of our customer’s needs. We are lucky to boast an enviable location in the heart of Athlone with access to our very own car park, accessible for all our customers. Our staff here at The Prince Bar are very important to us. We want our customers to receive the best service they can when dining or drinking at our venue. Our staff are our ambassadors and we strive to have the best we can. Here at The Prince Bar our staff are like one big family, with all members working their hardest to ensure you enjoy your time here with us.')");
+					  tx.executeSql("INSERT INTO PUBDATABASE VALUES (NULL, 'Flynn’s Bar and Restaurant', 'Commercial House, Main St, Curraghavarna, Banagher, Co. Offaly', 'Flynns Bar is located on Main St. Banagher, a beautiful location alongside the River Shannon. Eugene & Philomena have taken over the family business which has been in the family for over 100 years.  We serve Speciality Coffees & Teas, Craft beers, a vast array of Spirits and some carefully selected Wines. We also have a full carvery at lunchtime and has an extensive A L`Carte menu in our Restaurant. All events are catered for. We also show Live Sports for those avid fans. ')");
+						
+					
+					}, function(jsonError) {
                         console.log("Error while creating table : ");
                         console.log(jsonError);
                     }, function(){
                         alert("DB Created successfully");
                     });
-                } else if(parseInt(DBStorage.version) == 1) {
+                } else if(parseInt(DBStorage.version) == "1") {
 				 alert("Version 1");
                     DBStorage.changeVersion("1",DBVersion,
                     function(tx) {
-                        tx.executeSql("ALTER TABLE DEMO ADD COLUMN ROLLINFO TEXT");
-                        tx.executeSql("INSERT INTO DEMO VALUES (NULL, 'EXTRA', 'This is EXTRA', 'HOLD THE VALUE')");
+                        tx.executeSql("ALTER TABLE PUBDATABASE ADD COLUMN ROLLINFO TEXT");
+                        tx.executeSql("INSERT INTO PUBDATABASE VALUES (NULL, 'EXTRA', 'This is EXTRA', 'HOLD THE VALUE')");
                     }, function(jsonError){
                         console.log("Erro rhwile Upgradeed");
                         console.log(jsonError);
@@ -57,21 +58,21 @@
 					
                 }
             }
-
             function DisplayColumn() {
                 var DBStorageTemp = window.openDatabase("DBStorage.db", DBVersion, "Databse Storage", 200000);
                 DBStorageTemp.transaction(function(tx){
-                    tx.executeSql("SELECT * FROM DEMO", [], function(tx, result) {
+                    tx.executeSql("SELECT * FROM PUBDATABASE", [], function(tx, result) {
                         if(result) {
                             document.getElementById("dvData").innerHTML = "";
                             if(result.rows.length > 0){
                                 var strData = "<table width='100%' border='1' cellpadding='5' cellspacing='5'><tr><th>ROLLNO</th><th>ROLL NAME</th><th>ROLL DETAIL</th><th>ROLL INFO</th></tr>";
                                 for (var i = 0; i <  result.rows.length ; i++) {
                                     strData += "<tr>";
-                                    strData += "<td>" + result.rows.item(i).ROLLID + "</td>";
-                                    strData += "<td>" + result.rows.item(i).ROLLNAME + "</td>";
-                                    strData += "<td>" + result.rows.item(i).ROLLDETAIL + "</td>";
-
+                                    strData += "<td>" + result.rows.item(i).PUBID + "</td>";
+                                    strData += "<td>" + result.rows.item(i).PUBNAME + "</td>";
+                                    strData += "<td>" + result.rows.item(i).PUBADDRESS + "</td>";
+									strData += "<td>" + result.rows.item(i).PUBINFO + "</td>";
+									
                                     // if the ROLLINFO is available then add it to the table
                                     if(result.rows.item(i).ROLLINFO) {
                                         strData += "<td>" + result.rows.item(i).ROLLINFO + "</td>";
@@ -94,14 +95,20 @@
                 function(){
                     alert("Transaction is success.");
                 })
-
             }
+			
+			//not working, try to fix it
+			 function Delete() {
+			 tx.executeSql('DROP TABLE IF EXISTS PUBDATABASE');
+			 }
         </script>
     </head>
     <body>
         <br/>
         <input type="button" value="Generate Database" onclick="GenerateUpgradeDB()" />
-        <input type="button" value="Display Values" onclick="DisplayColumn()" />        
+        <input type="button" value="Display Values" onclick="DisplayColumn()" />     
+		<input type="button" value="Delete DB" onclick="Delete()" />      		
+		
         <br/>
         <div id="dvData"></div>
     </body>
